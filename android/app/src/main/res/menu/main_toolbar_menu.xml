@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_export_db"
+        android:icon="?attr/actionModeShareDrawable"
+        android:title="@string/export_db" />
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/about" />
+    <item
+        android:id="@+id/action_exit"
+        android:title="@string/exit" />
+</menu>

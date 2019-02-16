@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">SeaGlass</string>
+    <string name="title_activity_main">SeaGlass</string>
+    <string name="title_configuration">Config</string>
+    <string name="title_status">Status</string>
+    <string name="title_mapping">Maps</string>
+    <string name="title_cell_info">Cells</string>
+    <string name="logging_notification_title">Logging service enabled</string>
+    <string name="logging_notification_text">Touch to open app.</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_cell_log">CellLogActivity</string>
+    <string name="console_start_text">Osmocom Phone Console Not Started</string>
+    <string name="cell_info_start_text">Looking for Cells...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enable_scanning_and_logging">Enable Scanning and Logging</string>
+    <string name="enable_location">Enable Location</string>
+    <string name="usb_device">USB Device</string>
+    <string name="phone_type">Phone Type</string>
+    <string name="scan_900">Scan 900 MHz Band</string>
+    <string name="scan_1800">Scan 1800 MHz/DCS Band</string>
+    <string name="scan_850">Scan 850 MHz Band</string>
+    <string name="scan_1900">Scan 1900 MHz/PCS Band</string>
+    <string name="enable_transmit">Enable Transmit</string>
+    <string name="minimmum_sync_rssi">Minimum Sync RSSI</string>
+    <string name="enable_server_sync">Enable Server Sync</string>
+    <string name="server_hostname">Server</string>
+    <string name="default_server_hostname">seaglass.cs.washington.edu</string>
+    <string name="hostname">Hostname</string>
+
+    <string name="band_type">Spectrogram Band</string>
+
+    <string name="power_on_osmocom">Power on Osmocom phone</string>
+    <string name="bootloader_found">Bootload found</string>
+    <string name="uploading_chainloader">Uploading chainloader...</string>
+    <string name="uploading_firmware">Uploading firmware...</string>
+    <string name="osmocom_running">Osmocom firmware running!</string>
+    <string name="osmocom_error">Error uploading Osmocom firmware! Please try again.</string>
+
+    <string-array name="phone_types">
+        <item>Unknown</item>
+        <item>C123</item>
+        <item>C123XOR</item>
+        <item>C140</item>
+        <item>C140XOR</item>
+        <item>C155</item>
+    </string-array>
+
+    <string-array name="band_types">
+        <item>GSM850</item>
+        <item>GSM900</item>
+        <item>DCS1800</item>
+        <item>PCS1900</item>
+    </string-array>
+
+    <string name="title_activity_intro">Welcome to SeaGlass!</string>
+    <string name="title_activity_about">About the SeaGlass App</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="export_db">Export DB</string>
+    <string name="export_db_exception">Unable to export database!</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+</resources>

@@ -1,0 +1,7 @@
+[submodule "libosmocore"]
+	path = libosmocore
+	url = https://github.com/seaglass-project/libosmocore.git
+[submodule "osmocom-bb"]
+	path = osmocom-bb
+	url = https://github.com/seaglass-project/osmocom-bb.git
+	branch = seaglass

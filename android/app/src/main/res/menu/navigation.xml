@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_configuration"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/title_configuration" />
+    <item
+        android:id="@+id/navigation_status"
+        android:icon="@drawable/ic_subject_black_24dp"
+        android:title="@string/title_status" />
+
+    <item
+        android:id="@+id/navigation_mapping"
+        android:enabled="false"
+        android:icon="@drawable/ic_map_black_24dp"
+        android:title="@string/title_mapping"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/navigation_cell_info"
+        android:icon="@drawable/ic_network_check_black_24dp"
+        android:title="@string/title_cell_info" />
+
+</menu>
