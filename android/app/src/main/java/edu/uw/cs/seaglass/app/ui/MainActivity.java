@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
         options = new Options(this);
 
-        configFragment = ConfigFragment.newInstance(this);
+        configFragment = ConfigFragment.newInstance();
         statusFragment = StatusFragment.newInstance();
         cellInfoFragment = CellInfoFragment.newInstance();
 
@@ -220,13 +221,12 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
                         "Export database to"), EXPORT_DB_CODE);
                 return true;
             case R.id.action_about:
-                // TODO: Launch AboutActivity
                 Intent aboutIntent = new Intent(this, AboutActivity.class);
                 aboutIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(aboutIntent);
                 return true;
             case R.id.action_exit:
-                options.setSeenOnboarding(false);
+                //options.setSeenOnboarding(false);
                 moveTaskToBack(true);
                 Process.killProcess(Process.myPid());
                 System.exit(1);
@@ -251,6 +251,10 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        String action = intent.getAction();
+        if (action != null && action.equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+            configFragment.updateAvailableUSBPorts();
+        }
         Log.d(TAG, intent.toString());
     }
 
@@ -263,12 +267,14 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         bindService(new Intent(MainActivity.this, LoggingService.class),
                 mLoggingConnection, Context.BIND_AUTO_CREATE);
 
+        /*
         if (!options.getSeenOnboarding()) {
             Intent introIntent = new Intent(this, IntroActivity.class);
             introIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(introIntent);
             options.setSeenOnboarding(true);
         }
+        */
 
         // FIXME: Is this right?
         Menu menu = navigation.getMenu();
@@ -304,9 +310,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             }
         }
     }
-
-    @Override
-    public void onBackPressed() {}
 
     private void onLocationPermissionAcquired() {
         configFragment.locationPermissionAcquired();
@@ -357,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
             Snackbar snackbar = null;
 
-            // TODO: Move these strings to resources
             switch (phoneState) {
                 case PROMPT1:
                     snackbar = Snackbar.make(findViewById(R.id.container),
