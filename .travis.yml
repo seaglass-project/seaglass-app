@@ -1,0 +1,30 @@
+language: android
+android:
+  components:
+  - tools
+  - build-tools-28.0.3
+  - android-28
+before_install:
+  # These might be required: libtool shtool automake autoconf git-core pkg-config make gcc
+  - sudo apt-get update
+  - sudo apt-get install -y gcc-arm-none-eabi
+install:
+#  - wget https://dl.google.com/android/repository/cmake-3.6.4111459-linux-x86_64.zip
+#  - unzip -qq cmake-3.6.4111459-linux-x86_64.zip
+#  - wget https://dl.google.com/android/repository/android-ndk-r17c-linux-x86_64.zip
+#  - unzip -qq android-ndk-r17c-linux-x86_64.zip
+  - echo y | sdkmanager "ndk-bundle"
+  - echo y | sdkmanager "cmake;3.6.4111459"
+  - $ANDROID_HOME/ndk-bundle/build/tools/make_standalone_toolchain.py --arch arm --api 24 --install-dir ndk-toolchain
+before_cache:
+  - rm -f  $HOME/android/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/android/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/android/.gradle/caches/
+    - $HOME/android/.gradle/wrapper/
+    - $HOME/android/.android/build-cache
+before_script:
+  - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
+script:
+  - ./build.sh
