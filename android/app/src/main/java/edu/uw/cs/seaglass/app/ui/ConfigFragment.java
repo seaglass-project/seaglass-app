@@ -69,20 +69,23 @@ public class ConfigFragment extends Fragment {
     private Switch syncEnabledSwitch;
     private EditText hostnameField;
 
-    private AppCompatActivity appCompatActivity;
     private Options options;
     private HashMap<String, USBSerialPort> availablePorts;
 
     public ConfigFragment() {
     }
 
-    public static ConfigFragment newInstance(AppCompatActivity appCompatActivity) {
+    public static ConfigFragment newInstance() {
         ConfigFragment fragment = new ConfigFragment();
-        fragment.appCompatActivity = appCompatActivity;
-        fragment.options = new Options(appCompatActivity);
         //Bundle args = new Bundle();
         //fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        options = new Options(getActivity());
     }
 
     @Override
@@ -139,10 +142,10 @@ public class ConfigFragment extends Fragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             Log.d(TAG, "onLocationChanged: " + isChecked);
             if (isChecked) {
-                if (ActivityCompat.checkSelfPermission(appCompatActivity,
+                if (ActivityCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "Location permission not granted yet; requesting permission");
-                    ActivityCompat.requestPermissions(appCompatActivity,
+                    ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                             REQUEST_FINE_LOCATION_PERMISSION_CODE);
                     buttonView.setChecked(false);
@@ -193,7 +196,7 @@ public class ConfigFragment extends Fragment {
 
     private void requestUSBSerialPortPermission(USBSerialPort usbSerialPort) {
         Log.d(TAG, "Requesting USB port permission");
-        PendingIntent permissionIntent = PendingIntent.getBroadcast(appCompatActivity,
+        PendingIntent permissionIntent = PendingIntent.getBroadcast(getActivity(),
                 0, new Intent(MainActivity.ACTION_USB_PERMISSION_RESULT), 0);
         usbSerialPort.requestPermission(permissionIntent);
     }
@@ -252,7 +255,7 @@ public class ConfigFragment extends Fragment {
         } else {
             String[] availablePortNames =
                     availablePorts.keySet().toArray(new String[availablePorts.size()]);
-            usbDeviceSpinner.setAdapter(new ArrayAdapter<>(appCompatActivity,
+            usbDeviceSpinner.setAdapter(new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_dropdown_item,
                     availablePorts.keySet().toArray(new String[availablePorts.size()])));
             USBSerialPort port = availablePorts.get(availablePortNames[0]);
