@@ -26,6 +26,7 @@ public class CellObservation {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
+    public boolean synced;
 
     @Embedded
     public MeasurementHeader measurementHeader;

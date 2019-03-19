@@ -24,6 +24,7 @@ import androidx.room.PrimaryKey;
 public class SpectrumMeasurement {
     @PrimaryKey(autoGenerate = true)
     public int id;
+    public boolean synced;
 
     @Embedded
     public MeasurementHeader measurementHeader;

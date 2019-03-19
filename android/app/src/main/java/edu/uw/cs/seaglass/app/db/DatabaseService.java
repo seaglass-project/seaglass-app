@@ -34,6 +34,7 @@ import edu.uw.cs.seaglass.app.Utils;
 
 public class DatabaseService extends Service {
     private static final String TAG = Utils.TAG_PREFIX + "DatabaseService";
+    private static final String DB_NAME = "seaglass-app-db";
 
     private final IBinder mBinder = new LocalBinder();
     private AppDatabase db;
@@ -56,7 +57,7 @@ public class DatabaseService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        db = Room.databaseBuilder(this, AppDatabase.class, "spiglass-ui-db").build();
+        db = Room.databaseBuilder(this, AppDatabase.class, DB_NAME).build();
     }
 
     public void insertLocationMeasurement(LocationMeasurement locationMeasurement) {
@@ -95,17 +96,17 @@ public class DatabaseService extends Service {
     }
 
     public Uri getExportUri() throws IOException {
-        File dbCache = new File(getCacheDir(), "spiglass-ui-db");
+        File dbCache = new File(getCacheDir(), DB_NAME);
         dbCache.deleteOnExit();
         // Hopefully this ensures that the DB is in a consistent state...
         synchronized (db) {
-            copyFile(getDatabasePath("spiglass-ui-db"), dbCache);
+            copyFile(getDatabasePath(DB_NAME), dbCache);
         }
         return FileProvider.getUriForFile(this,
                 "edu.uw.cs.seaglass.app.FileProvider", dbCache);
     }
 
     public boolean deleteExportCache() {
-        return new File(getCacheDir(), "spiglass-ui-db").delete();
+        return new File(getCacheDir(), DB_NAME).delete();
     }
 }

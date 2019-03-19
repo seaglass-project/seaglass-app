@@ -21,7 +21,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 @Database(entities = {CellObservation.class, GSMPacket.class,
-        SpectrumMeasurement.class, LocationMeasurement.class}, version = 1, exportSchema = false)
+        SpectrumMeasurement.class, LocationMeasurement.class}, version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CellObservationDAO cellObservationDAO();

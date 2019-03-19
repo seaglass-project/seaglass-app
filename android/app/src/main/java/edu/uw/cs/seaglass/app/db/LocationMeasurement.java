@@ -23,6 +23,7 @@ import androidx.room.PrimaryKey;
 public class LocationMeasurement {
     @PrimaryKey(autoGenerate = true)
     public int id;
+    public boolean synced;
 
     public long timestamp;
     public double latitude;
