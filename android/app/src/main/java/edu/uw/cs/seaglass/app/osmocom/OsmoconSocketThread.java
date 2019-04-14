@@ -73,6 +73,14 @@ public class OsmoconSocketThread extends Thread {
         }
     }
 
+    public void shutdown() {
+        try {
+            listenSocket.close();
+        } catch (IOException ex) {
+            Log.w(TAG, ex.toString());
+        }
+    }
+
     private int getLengthFromInputStream(InputStream inputStream) throws IOException {
         byte[] inBytes = new byte[2];
         int readCount = 0;
@@ -104,7 +112,7 @@ public class OsmoconSocketThread extends Thread {
                 osmoconService.sendToPhone(OsmoconService.SC_DLCI_L1A_L23, payload);
             }
         } catch (IOException ex) {
-            Log.w(TAG, ex.toString());
+            Log.d(TAG, ex.toString());
         }
     }
 }

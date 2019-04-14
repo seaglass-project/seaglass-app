@@ -181,6 +181,8 @@ public class LoggingService extends Service implements
             //os.start();
         } catch (IOException ex) {
             Log.e(TAG, "Error starting OsmoconService", ex);
+            stopScan();
+            return;
         }
 
         ob = new OsmocomBinaries(getFilesDir(),
@@ -193,6 +195,8 @@ public class LoggingService extends Service implements
             gsmPktProviderThread.start();
         } catch (Exception e) {
             Log.e(TAG, "Exception thrown while creating IPGSMTAPProvider", e);
+            stopScan();
+            return;
         }
 
         try {
@@ -203,6 +207,8 @@ public class LoggingService extends Service implements
             cellLogProviderThread.start();
         } catch (Exception e) {
             Log.e(TAG, "Exception thrown while creating CellLogProvider", e);
+            stopScan();
+            return;
         }
 
 
@@ -244,15 +250,23 @@ public class LoggingService extends Service implements
         }
         if (ob != null) {
             ob.close();
+            ob = null;
+        }
+        if (os != null) {
+            os.shutdown();
+            os = null;
         }
         if (mFusedLocationClient != null){
             mFusedLocationClient.removeLocationUpdates(loggerLocationCallback);
+            mFusedLocationClient = null;
         }
         if (gsmPktProviderThread != null){
             gsmPktProviderThread.interrupt();
+            gsmPktProviderThread = null;
         }
         if (cellLogProviderThread != null){
             cellLogProviderThread.interrupt();
+            cellLogProviderThread = null;
         }
         stopForeground(true);
         stopSelf();

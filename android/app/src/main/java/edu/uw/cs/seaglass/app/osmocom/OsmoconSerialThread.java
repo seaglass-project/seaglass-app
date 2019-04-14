@@ -315,6 +315,10 @@ class OsmoconSerialThread extends Thread {
         }
     }
 
+    public void shutdown() {
+        usbSerialPort.close();
+    }
+
     private byte computeXorChkSum(byte[] data) {
         byte xorChkSum = 0;
         for (byte b : data) {

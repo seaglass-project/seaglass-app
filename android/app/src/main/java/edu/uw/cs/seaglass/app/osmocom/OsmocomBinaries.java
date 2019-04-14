@@ -42,7 +42,7 @@ public class OsmocomBinaries extends Thread {
         this.options = options;
     }
 
-    public void run(){
+    public void run() {
         // Need to set the correct permissions so that we can talk to the USB device
         //Utils.sudo("setenforce 0");
         //Utils.sudo("chmod 666 /dev/ttyUSB0");

@@ -56,6 +56,11 @@ public class OsmoconService {
         socketThread.start();
     }
 
+    public void shutdown() {
+        serialThread.shutdown();
+        socketThread.shutdown();
+    }
+
     void serialThreadStatusUpdated(PhoneState phoneState,
                                    int payloadBytesSent, int payloadTotalSize) {
         Intent intent = new Intent(OSMOCON_STATUS_UPDATE);
