@@ -284,6 +284,8 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
     @Override
     protected void onStop() {
+        unbindService(mDatabaseConnection);
+        unbindService(mLoggingConnection);
         super.onStop();
     }
 
