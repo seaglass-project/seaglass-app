@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         }
     };
 
-    private void startLogging(){
+    private void startLogging() {
         if (!this.loggingServiceRunning) {
             Intent intent = new Intent(MainActivity.this, LoggingService.class);
             startService(intent);
@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         }
     }
 
-    private void stopLogging(){
+    private void stopLogging() {
         if (this.loggingServiceRunning){
             mLoggingService.stopScan();
             this.loggingServiceRunning = false;
