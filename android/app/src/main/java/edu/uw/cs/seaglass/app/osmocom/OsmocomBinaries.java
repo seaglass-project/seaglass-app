@@ -123,7 +123,7 @@ public class OsmocomBinaries extends Thread {
         Log.d(TAG, "Launched cell_log");
     }
 
-    public void close(){
+    public void close() {
         if (osmoconHost != null){
             osmoconHost.killProcess();
             Log.d(TAG, "Killed osmocon");
