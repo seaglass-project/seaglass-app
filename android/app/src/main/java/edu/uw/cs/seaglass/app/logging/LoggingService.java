@@ -285,11 +285,15 @@ public class LoggingService extends Service implements
         intent.putExtra(CELL_LOG_TIMESTAMP, measurement.measurementHeader.timestamp);
         localBroadcastManager.sendBroadcast(intent);
 
-        mDatabaseService.insertSpectrumMeasurement(measurement);
+        if (mDatabaseService != null) {
+            mDatabaseService.insertSpectrumMeasurement(measurement);
+        }
     }
 
     public void onGSMPacketReceived(GSMPacket pkt) {
-        mDatabaseService.insertGSMPacket(pkt);
+        if (mDatabaseService != null) {
+            mDatabaseService.insertGSMPacket(pkt);
+        }
     }
 
     public void onCellObservationReceived(CellObservation observation) {
@@ -302,6 +306,8 @@ public class LoggingService extends Service implements
             localBroadcastManager.sendBroadcast(intent);
         }
 
-        mDatabaseService.insertCellObservation(observation);
+        if (mDatabaseService != null) {
+            mDatabaseService.insertCellObservation(observation);
+        }
     }
 }

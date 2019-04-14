@@ -262,6 +262,9 @@ class OsmoconSerialThread extends Thread {
             usbSerialPort.setBaudRate(115200);
 
             for (;;) {
+                if (usbSerialPort == null) {
+                    return;
+                }
                 byte[] buf = usbSerialPort.read(4096);
                 long recvTime = SystemClock.elapsedRealtime();
                 if (recvTime - lastRecvTime > SERIAL_STATE_TIMEOUT) {
@@ -317,6 +320,7 @@ class OsmoconSerialThread extends Thread {
 
     public void shutdown() {
         usbSerialPort.close();
+        usbSerialPort = null;
     }
 
     private byte computeXorChkSum(byte[] data) {
