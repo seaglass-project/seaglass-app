@@ -19,12 +19,18 @@ package edu.uw.cs.seaglass.app.db;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
+
+import java.util.List;
 
 @Dao
 public interface CellObservationDAO {
     @Insert
     void insert(CellObservation observation);
 
-    @Query("SELECT COUNT(*) FROM CellObservation")
-    int getNumberOfRows();
+    @Query("SELECT * FROM CellObservation WHERE synced IS 0 LIMIT :limit")
+    List<CellObservation> getUnsynced(int limit);
+
+    @Query("UPDATE CellObservation SET synced = 1 WHERE id IN (:ids)")
+    void markSynced(List<Integer> ids);
 }

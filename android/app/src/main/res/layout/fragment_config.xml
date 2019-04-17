@@ -192,7 +192,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:background="?android:attr/listDivider"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rssi_spinner" />
 
@@ -205,7 +204,6 @@
         android:layout_marginEnd="8dp"
         android:text="@string/enable_server_sync"
         android:textSize="18sp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -220,11 +218,10 @@
         android:labelFor="@id/server_hostname"
         android:text="@string/server_hostname"
         android:textSize="18sp"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enable_sync" />
 
-    <EditText
+    <TextView
         android:id="@+id/server_hostname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -234,9 +231,25 @@
         android:importantForAutofill="no"
         android:inputType="textUri"
         android:text="@string/hostname"
-        android:visibility="gone"
+        android:imeOptions="actionDone"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/server_hostname_label"
         app:layout_constraintTop_toBottomOf="@+id/enable_sync" />
+
+    <Switch
+        android:id="@+id/metered_upload_allowed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/metered_sync_allowed"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/server_hostname_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

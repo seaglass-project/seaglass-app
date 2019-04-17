@@ -26,8 +26,9 @@
     <string name="minimmum_sync_rssi">Minimum Sync RSSI</string>
     <string name="enable_server_sync">Enable Server Sync</string>
     <string name="server_hostname">Server</string>
-    <string name="default_server_hostname">seaglass.cs.washington.edu</string>
+    <string name="default_server_hostname">seaglass-ep.cs.washington.edu</string>
     <string name="hostname">Hostname</string>
+    <string name="metered_sync_allowed">Sync on Metered Connections</string>
 
     <string name="band_type">Spectrogram Band</string>
 

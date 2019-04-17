@@ -16,15 +16,21 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import java.util.List;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 @Dao
 public interface LocationMeasurementDAO {
     @Insert
     void insert(LocationMeasurement measurement);
 
-    @Query("SELECT COUNT(*) FROM LocationMeasurement")
-    int getNumberOfRows();
+    @Query("SELECT * FROM LocationMeasurement WHERE synced IS 0 LIMIT :limit")
+    List<LocationMeasurement> getUnsynced(int limit);
+
+    @Query("UPDATE LocationMeasurement SET synced = 1 WHERE id IN (:ids)")
+    void markSynced(List<Integer> ids);
 }

@@ -16,6 +16,11 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -23,7 +28,7 @@ import androidx.room.PrimaryKey;
 public class LocationMeasurement {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public boolean synced;
+    public boolean synced = false;
 
     public long timestamp;
     public double latitude;
@@ -32,4 +37,12 @@ public class LocationMeasurement {
     public float bearing;
     public float speed;
     public float horizontalAccuracy;
+
+    public static JSONObject getJson(LocationMeasurement lm) throws JSONException {
+        Gson gson = new Gson();
+
+        JSONObject lmJson = new JSONObject(gson.toJson(lm));
+        lmJson.remove("synced");
+        return lmJson;
+    }
 }

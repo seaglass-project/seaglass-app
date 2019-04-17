@@ -22,7 +22,7 @@ import java.io.IOException;
 import edu.uw.cs.seaglass.app.db.Band;
 
 public class Utils {
-    public static final String TAG_PREFIX = "SpiG-";
+    public static final String TAG_PREFIX = "SG-";
 
     public static Band bandFromARFCN(short arfcn, boolean isPCS) throws IllegalArgumentException {
         if (arfcn <= 124) {

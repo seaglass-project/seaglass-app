@@ -24,6 +24,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.TextView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View.OnFocusChangeListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -67,7 +71,8 @@ public class ConfigFragment extends Fragment {
     private Switch transmitEnabledSwitch;
     private Spinner minimumRSSISpinner;
     private Switch syncEnabledSwitch;
-    private EditText hostnameField;
+    private Switch meteredSyncAllowed;
+    private TextView hostnameField;
 
     private Options options;
     private HashMap<String, USBSerialPort> availablePorts;
@@ -105,7 +110,8 @@ public class ConfigFragment extends Fragment {
         this.transmitEnabledSwitch = (Switch)view.findViewById(R.id.enable_transmit);
         this.minimumRSSISpinner = (Spinner)view.findViewById(R.id.rssi_spinner);
         this.syncEnabledSwitch = (Switch)view.findViewById(R.id.enable_sync);
-        this.hostnameField = (EditText)view.findViewById(R.id.server_hostname);
+        this.hostnameField = (TextView) view.findViewById(R.id.server_hostname);
+        this.meteredSyncAllowed = (Switch)view.findViewById(R.id.metered_upload_allowed);
 
         updateAvailableUSBPorts();
 
@@ -116,6 +122,8 @@ public class ConfigFragment extends Fragment {
         this.scan900Switch.setOnCheckedChangeListener(onScan900Changed);
         this.scan1800Switch.setOnCheckedChangeListener(onScan1800Changed);
         this.scan1900Switch.setOnCheckedChangeListener(onScan1900Changed);
+        this.syncEnabledSwitch.setOnCheckedChangeListener(onSyncEnabledChanged);
+        this.meteredSyncAllowed.setOnCheckedChangeListener(onMeteredSyncAllowedChanged);
 
         return view;
     }
@@ -191,6 +199,20 @@ public class ConfigFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             options.setBandEnabled(Band.PCS1900, isChecked);
+        }
+    };
+
+    private Switch.OnCheckedChangeListener onSyncEnabledChanged = new Switch.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            options.setSyncEnabled(isChecked);
+        }
+    };
+
+    private Switch.OnCheckedChangeListener onMeteredSyncAllowedChanged = new Switch.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            options.setMeteredSyncAllowed(isChecked);
         }
     };
 
@@ -281,6 +303,7 @@ public class ConfigFragment extends Fragment {
         scan1900Switch.setChecked(options.getBandEnabled(Band.PCS1900));
         transmitEnabledSwitch.setChecked(options.getTransmitEnabled());
         syncEnabledSwitch.setChecked(options.getSyncEnabled());
+        meteredSyncAllowed.setChecked(options.getMeteredSyncAllowed());
         hostnameField.setText(options.getSyncServer());
     }
 }

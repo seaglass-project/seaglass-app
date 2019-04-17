@@ -50,11 +50,13 @@ android {
 
 repositories {
     maven { url 'https://jitpack.io' }
+    maven { url 'https://maven.google.com' }
 }
 
 dependencies {
     def room_version = '2.0.0-beta01'
     def nav_version = "1.0.0-alpha09"
+    def work_version = "2.0.1"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
@@ -73,4 +75,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.volley:volley:1.1.1'
 }

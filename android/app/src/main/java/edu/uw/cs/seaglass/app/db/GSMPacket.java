@@ -16,6 +16,11 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -24,7 +29,7 @@ import androidx.room.PrimaryKey;
 public class GSMPacket {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public boolean synced;
+    public boolean synced = false;
 
     @Embedded
     public MeasurementHeader measurementHeader;
@@ -33,4 +38,12 @@ public class GSMPacket {
     public byte timeslot;
     public int frameNumber;
     public byte[] payload;
+
+    public static JSONObject getJson(GSMPacket gp) throws JSONException {
+        Gson gson = new Gson();
+
+        JSONObject gpJson = new JSONObject(gson.toJson(gp));
+        gpJson.remove("synced");
+        return gpJson;
+    }
 }
