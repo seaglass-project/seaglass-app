@@ -71,8 +71,8 @@ public class ConfigFragment extends Fragment {
     private Switch transmitEnabledSwitch;
     private Spinner minimumRSSISpinner;
     private Switch syncEnabledSwitch;
+    private EditText hostnameField;
     private Switch meteredSyncAllowed;
-    private TextView hostnameField;
 
     private Options options;
     private HashMap<String, USBSerialPort> availablePorts;
@@ -110,7 +110,7 @@ public class ConfigFragment extends Fragment {
         this.transmitEnabledSwitch = (Switch)view.findViewById(R.id.enable_transmit);
         this.minimumRSSISpinner = (Spinner)view.findViewById(R.id.rssi_spinner);
         this.syncEnabledSwitch = (Switch)view.findViewById(R.id.enable_sync);
-        this.hostnameField = (TextView) view.findViewById(R.id.server_hostname);
+        this.hostnameField = (EditText)view.findViewById(R.id.server_hostname);
         this.meteredSyncAllowed = (Switch)view.findViewById(R.id.metered_upload_allowed);
 
         updateAvailableUSBPorts();
