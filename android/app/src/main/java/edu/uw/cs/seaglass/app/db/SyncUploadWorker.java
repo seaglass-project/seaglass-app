@@ -77,7 +77,6 @@ public class SyncUploadWorker extends Worker {
 
         Options options = new Options(context);
         endpoint = HTTPS_PREFIX + options.getSyncServer();
-        //endpoint = "https://ptsv2.com/t/hnuh0-1555537552/post";
 
         uuid = options.getUUID();
         uploadKey = options.getUploadKey();
