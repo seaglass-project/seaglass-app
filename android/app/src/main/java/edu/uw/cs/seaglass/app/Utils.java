@@ -139,8 +139,10 @@ public class Utils {
         return (buf[0] == 0x7e && buf[2] == 0x03 && buf[buf.length - 1] == 0x7e);
     }
 
-    public static final Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class,
-            new ByteArrayToBase64TypeAdapter()).create();
+    public static final Gson gson = new GsonBuilder()
+        .registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
+        .registerTypeHierarchyAdapter(Band.class, new BandToIntegerAdapter())
+        .create();
 
     private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
         public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -149,6 +151,20 @@ public class Utils {
 
         public JsonElement serialize(byte[] src, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(Base64.encodeToString(src, Base64.NO_WRAP));
+        }
+    }
+
+    private static class BandToIntegerAdapter implements JsonSerializer<Band>, JsonDeserializer<Band> {
+        public Band deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            try {
+                return Band.intToBand(json.getAsInt());
+            } catch (IllegalArgumentException ex) {
+                throw new JsonParseException("Invalid band value");
+            }
+        }
+
+        public JsonElement serialize(Band src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.getId());
         }
     }
 }

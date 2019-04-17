@@ -47,4 +47,19 @@ public enum Band {
 
         return bandStr;
     }
+
+    public static Band intToBand(int b) {
+        switch (b) {
+            case 0:
+                return GSM900;
+            case 1:
+                return GSM850;
+            case 2:
+                return DCS1800;
+            case 3:
+                return PCS1900;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
 }
