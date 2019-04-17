@@ -148,7 +148,7 @@ public class SyncUploadWorker extends Worker {
 
     private void postRequest(final String json){
 
-        StringRequest request = new StringRequest(Request.Method.POST, "http://ptsv2.com/t/k08oe-1555457872/post",
+        StringRequest request = new StringRequest(Request.Method.POST, endpoint,
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
