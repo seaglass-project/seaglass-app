@@ -24,6 +24,8 @@ import org.json.JSONObject;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import edu.uw.cs.seaglass.app.Utils;
+
 @Entity
 public class LocationMeasurement {
     @PrimaryKey(autoGenerate = true)
@@ -39,9 +41,7 @@ public class LocationMeasurement {
     public float horizontalAccuracy;
 
     public static JSONObject getJson(LocationMeasurement lm) throws JSONException {
-        Gson gson = new Gson();
-
-        JSONObject lmJson = new JSONObject(gson.toJson(lm));
+        JSONObject lmJson = new JSONObject(Utils.gson.toJson(lm));
         lmJson.remove("synced");
         return lmJson;
     }

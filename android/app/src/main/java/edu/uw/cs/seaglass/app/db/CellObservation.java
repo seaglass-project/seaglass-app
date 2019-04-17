@@ -16,8 +16,6 @@
 
 package edu.uw.cs.seaglass.app.db;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -31,7 +29,6 @@ import edu.uw.cs.seaglass.app.Utils;
 @Entity
 public class CellObservation {
     public static final byte NO_TA = (byte) 0xFF;
-    private static final String TAG = Utils.TAG_PREFIX + "CellObservation";
 
     @PrimaryKey(autoGenerate = true)
     public int id;
@@ -50,10 +47,8 @@ public class CellObservation {
 
     public boolean synced = false;
 
-    public static JSONObject getJson(CellObservation co) throws JSONException{
-        Gson gson = new Gson();
-
-        JSONObject cellObsJson = new JSONObject(gson.toJson(co));
+    public static JSONObject getJson(CellObservation co) throws JSONException {
+        JSONObject cellObsJson = new JSONObject(Utils.gson.toJson(co));
         cellObsJson.remove("synced");
         return cellObsJson;
     }

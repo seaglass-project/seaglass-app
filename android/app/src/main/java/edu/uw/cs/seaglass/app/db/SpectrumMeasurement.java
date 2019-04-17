@@ -25,6 +25,8 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import edu.uw.cs.seaglass.app.Utils;
+
 @Entity
 public class SpectrumMeasurement {
     @PrimaryKey(autoGenerate = true)
@@ -35,9 +37,7 @@ public class SpectrumMeasurement {
     public MeasurementHeader measurementHeader;
 
     public static JSONObject getJson(SpectrumMeasurement sm) throws JSONException {
-        Gson gson = new Gson();
-
-        JSONObject smJson = new JSONObject(gson.toJson(sm));
+        JSONObject smJson = new JSONObject(Utils.gson.toJson(sm));
         smJson.remove("synced");
         return smJson;
     }

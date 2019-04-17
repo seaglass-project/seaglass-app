@@ -25,6 +25,8 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import edu.uw.cs.seaglass.app.Utils;
+
 @Entity
 public class GSMPacket {
     @PrimaryKey(autoGenerate = true)
@@ -40,9 +42,7 @@ public class GSMPacket {
     public byte[] payload;
 
     public static JSONObject getJson(GSMPacket gp) throws JSONException {
-        Gson gson = new Gson();
-
-        JSONObject gpJson = new JSONObject(gson.toJson(gp));
+        JSONObject gpJson = new JSONObject(Utils.gson.toJson(gp));
         gpJson.remove("synced");
         return gpJson;
     }

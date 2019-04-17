@@ -33,4 +33,7 @@ public interface LocationMeasurementDAO {
 
     @Query("UPDATE LocationMeasurement SET synced = 1 WHERE id IN (:ids)")
     void markSynced(List<Integer> ids);
+
+    @Query("UPDATE LocationMeasurement SET synced = 1 WHERE id = :id")
+    void markSynced(int id);
 }

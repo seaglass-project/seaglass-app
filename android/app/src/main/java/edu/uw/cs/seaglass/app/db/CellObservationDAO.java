@@ -33,4 +33,7 @@ public interface CellObservationDAO {
 
     @Query("UPDATE CellObservation SET synced = 1 WHERE id IN (:ids)")
     void markSynced(List<Integer> ids);
+
+    @Query("UPDATE CellObservation SET synced = 1 WHERE id = :id")
+    void markSynced(int id);
 }

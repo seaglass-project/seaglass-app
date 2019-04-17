@@ -1,12 +1,8 @@
 package edu.uw.cs.seaglass.app.db;
 
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import androidx.annotation.NonNull;
-import androidx.work.Data;
-import androidx.work.Data.Builder;
 
 import edu.uw.cs.seaglass.app.Options;
 import edu.uw.cs.seaglass.app.Utils;
@@ -26,7 +22,6 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Arrays;
 
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.StringRequest;
@@ -40,9 +35,9 @@ public class SyncUploadWorker extends Worker {
 
     private DatabaseService mDatabaseService;
     private static final String TAG = Utils.TAG_PREFIX + "SyncUploadWorker";
-    private static final int DB_QUERY_LIMIT = 10000;
+    private static final int DB_QUERY_LIMIT = 100;
     private static final int MAX_NUM_MARK = 1000;
-    private static final String HTTPS_HEADER = "https://";
+    private static final String HTTPS_PREFIX = "https://";
 
     List<CellObservation> cellObsToSync;
     List<GSMPacket> gsmPktsToSync;
@@ -54,6 +49,9 @@ public class SyncUploadWorker extends Worker {
     private String endpoint;
     private String uuid;
     private String uploadKey;
+
+    private boolean postFinished;
+    private boolean postSuccessful;
 
     private ServiceConnection mDatabaseConnection = new ServiceConnection() {
         @Override
@@ -72,14 +70,14 @@ public class SyncUploadWorker extends Worker {
     public SyncUploadWorker(
             @NonNull Context context,
             @NonNull WorkerParameters params) {
-
         super(context, params);
 
         Intent databaseServiceIntent = new Intent(context, DatabaseService.class);
         context.bindService(databaseServiceIntent, mDatabaseConnection, Context.BIND_AUTO_CREATE);
 
         Options options = new Options(context);
-        endpoint = HTTPS_HEADER + options.getSyncServer();
+        endpoint = HTTPS_PREFIX + options.getSyncServer();
+        //endpoint = "https://ptsv2.com/t/hnuh0-1555537552/post";
 
         uuid = options.getUUID();
         uploadKey = options.getUploadKey();
@@ -89,23 +87,32 @@ public class SyncUploadWorker extends Worker {
 
     @Override
     public Result doWork() {
-        cellObsToSync = mDatabaseService.getUnsyncedCellObservations(DB_QUERY_LIMIT);
-        gsmPktsToSync = mDatabaseService.getUnsyncedGSMPackets(DB_QUERY_LIMIT);
-        spectrumMeasToSync = mDatabaseService.getUnsyncedSpectrumMeasurements(DB_QUERY_LIMIT);
-        locationMeasToSync = mDatabaseService.getUnsyncedLocationMeasurements(DB_QUERY_LIMIT);
+        for (;;) {
+            cellObsToSync = mDatabaseService.getUnsyncedCellObservations(DB_QUERY_LIMIT);
+            gsmPktsToSync = mDatabaseService.getUnsyncedGSMPackets(DB_QUERY_LIMIT);
+            spectrumMeasToSync = mDatabaseService.getUnsyncedSpectrumMeasurements(DB_QUERY_LIMIT);
+            locationMeasToSync = mDatabaseService.getUnsyncedLocationMeasurements(DB_QUERY_LIMIT);
 
-        try {
-            String requestJson = getJson(cellObsToSync, gsmPktsToSync,
-                    spectrumMeasToSync, locationMeasToSync);
+            if (cellObsToSync.isEmpty() && gsmPktsToSync.isEmpty() &&
+                    spectrumMeasToSync.isEmpty() && locationMeasToSync.isEmpty()) {
+                return Result.success();
+            }
 
-            postRequest(requestJson);
-            Log.d(TAG, "Sync Work Finished.");
-
-            return Result.success();
-        }
-        catch (JSONException e){
-            Log.e(TAG, "Error constructing JSON for POST request");
-            return Result.failure();
+            try {
+                String requestJson = getJson(cellObsToSync, gsmPktsToSync,
+                        spectrumMeasToSync, locationMeasToSync);
+               if (!postRequest(requestJson)) {
+                   Log.e(TAG, "postRequest failed");
+                   return Result.failure();
+               }
+               mDatabaseService.markCellObservations(cellObsToSync);
+               mDatabaseService.markGSMPackets(gsmPktsToSync);
+               mDatabaseService.markSpectrumMeasurements(spectrumMeasToSync);
+               mDatabaseService.markLocationMeasurements(locationMeasToSync);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error constructing JSON for POST request");
+                return Result.failure();
+            }
         }
     }
 
@@ -118,72 +125,59 @@ public class SyncUploadWorker extends Worker {
         JSONArray jsonArray;
 
         postData.put("uuid", uuid);
-        postData.put("upload-key", uploadKey);
+        postData.put("uploadkey", uploadKey);
+        postData.put("version", 1);
 
         jsonArray = new JSONArray();
         for (CellObservation co : cos) {
             jsonArray.put(CellObservation.getJson(co));
         }
-        postData.put("cell_observations", jsonArray);
+        postData.put("CellObservations", jsonArray);
 
         jsonArray = new JSONArray();
         for (GSMPacket gp : gsmpkts) {
             jsonArray.put(GSMPacket.getJson(gp));
         }
-        postData.put("gsm_packets", jsonArray);
+        postData.put("GSMPackets", jsonArray);
 
         jsonArray = new JSONArray();
         for (SpectrumMeasurement sm : sms) {
             jsonArray.put(SpectrumMeasurement.getJson(sm));
         }
-        postData.put("spectrum_measurements", jsonArray);
+        postData.put("SpectrumMeasurements", jsonArray);
 
         jsonArray = new JSONArray();
         for (LocationMeasurement lm : lms) {
             jsonArray.put(LocationMeasurement.getJson(lm));
         }
-        postData.put("location_measurements", jsonArray);
+        postData.put("LocationMeasurements", jsonArray);
         //Log.d(TAG, postData.toString());
 
         return postData.toString();
     }
 
-    private void postRequest(final String json){
-
+    private boolean postRequest(final String json) {
         StringRequest request = new StringRequest(Request.Method.POST, endpoint,
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "POST Request for DB Sync Succeeded");
-
-                int[] coids = new int[cellObsToSync.size()];
-                int[] gpids = new int[gsmPktsToSync.size()];
-                int[] smids = new int[spectrumMeasToSync.size()];
-                int[] lmids = new int[locationMeasToSync.size()];
-
-                for (int i = 0; i < coids.length; i++){
-                    coids[i] = cellObsToSync.get(i).id;
+                synchronized (SyncUploadWorker.this) {
+                    postFinished = true;
+                    postSuccessful = true;
+                    SyncUploadWorker.this.notify();
                 }
-                for (int i = 0; i < gpids.length; i++){
-                    gpids[i] = gsmPktsToSync.get(i).id;
-                }
-                for (int i = 0; i < smids.length; i++){
-                    smids[i] = spectrumMeasToSync.get(i).id;
-                }
-                for (int i = 0; i < lmids.length; i++){
-                    lmids[i] = locationMeasToSync.get(i).id;
-                }
-
-                batchWorkRequests(ClearSyncWorker.CELL_OBSERVATION_IDS, coids);
-                batchWorkRequests(ClearSyncWorker.GSM_PACKET_IDS, gpids);
-                batchWorkRequests(ClearSyncWorker.SPECTRUM_MEAS_IDS, smids);
-                batchWorkRequests(ClearSyncWorker.LOCATION_MEAS_IDS, lmids);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "POST Request for DB Sync Failed");
                 Log.d(TAG, error.toString());
+                synchronized (SyncUploadWorker.this) {
+                    postFinished = true;
+                    postSuccessful = false;
+                    SyncUploadWorker.this.notify();
+                }
             }
         }){
             @Override
@@ -202,51 +196,19 @@ public class SyncUploadWorker extends Worker {
             }
         };
 
-        requestQueue.add(request);
-    }
+        synchronized (this) {
+            postFinished = false;
+            requestQueue.add(request);
 
-    private void batchWorkRequests(String key, int[] ids){
-        int[] idBatch = new int[MAX_NUM_MARK];
-        int index = 0;
-        int curBatchNum = 0;
-
-        while (index < ids.length) {
-            idBatch[curBatchNum] = ids[index];
-            curBatchNum++;
-
-            if (curBatchNum >= MAX_NUM_MARK) {
-                executeMarkWorker(key, idBatch);
-
-                curBatchNum = 0;
-                idBatch = new int[MAX_NUM_MARK];
+            while (!postFinished) {
+                try {
+                    wait();
+                } catch (InterruptedException ie) {
+                    return false;
+                }
             }
-            index++;
         }
 
-        if (curBatchNum > 0) {
-            int[] modifiedIdBatch = new int[curBatchNum];
-            for (int k = 0; k < modifiedIdBatch.length; k++){
-                modifiedIdBatch[k] = idBatch[k];
-            }
-            executeMarkWorker(key, modifiedIdBatch);
-        }
-    }
-
-    private void executeMarkWorker(String dataKey, int[] ids) {
-        try {
-            Data dbIds = new Data.Builder()
-                    .putIntArray(dataKey, ids)
-                    .build();
-
-            OneTimeWorkRequest clearSyncRequest =
-                    new OneTimeWorkRequest.Builder(ClearSyncWorker.class)
-                            .setInputData(dbIds)
-                            .build();
-
-            WorkManager.getInstance().enqueue(clearSyncRequest);
-        } catch(IllegalStateException e){
-            Log.e(TAG, "Trying to serialize too much. Records not being marked");
-        }
-
+        return postSuccessful;
     }
 }

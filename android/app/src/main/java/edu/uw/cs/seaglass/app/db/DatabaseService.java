@@ -141,107 +141,27 @@ public class DatabaseService extends Service {
         }
     }
 
-    public void markCellObservations(int[] ids){
-        int index = 0;
-        int numMarked = 0;
-        ArrayList<Integer> idArray = new ArrayList<Integer>();
-
-        while (index < ids.length){
-            idArray.add(ids[index]);
-            numMarked++;
-
-            if (numMarked >= MARK_LIMIT){
-                synchronized (db){
-                    db.cellObservationDAO().markSynced(idArray);
-                }
-                idArray = new ArrayList<Integer>();
-                numMarked = 0;
-            }
-            index++;
-        }
-
-        if (numMarked > 0) {
-            synchronized (db) {
-                db.cellObservationDAO().markSynced(idArray);
-            }
+    public void markCellObservations(List<CellObservation> cellObservations) {
+        for (CellObservation cellObservation : cellObservations) {
+            db.cellObservationDAO().markSynced(cellObservation.id);
         }
     }
 
-    public void markGSMPackets(int[] ids){
-        int index = 0;
-        int numMarked = 0;
-        ArrayList<Integer> idArray = new ArrayList<Integer>();
-
-        while (index < ids.length){
-            idArray.add(ids[index]);
-            numMarked++;
-
-            if (numMarked >= MARK_LIMIT){
-                synchronized (db){
-                    db.gsmPacketDAO().markSynced(idArray);
-                }
-                idArray = new ArrayList<Integer>();
-                numMarked = 0;
-            }
-            index++;
-        }
-
-        if (numMarked > 0) {
-            synchronized (db) {
-                db.gsmPacketDAO().markSynced(idArray);
-            }
+    public void markGSMPackets(List<GSMPacket> gsmPackets) {
+        for (GSMPacket gsmPacket : gsmPackets) {
+            db.gsmPacketDAO().markSynced(gsmPacket.id);
         }
     }
 
-    public void markSpectrumMeasurements(int[] ids){
-        int index = 0;
-        int numMarked = 0;
-        ArrayList<Integer> idArray = new ArrayList<Integer>();
-
-        while (index < ids.length){
-            idArray.add(ids[index]);
-            numMarked++;
-
-            if (numMarked >= MARK_LIMIT){
-                synchronized (db){
-                    db.spectrumMeasurementDAO().markSynced(idArray);
-                }
-                idArray = new ArrayList<Integer>();
-                numMarked = 0;
-            }
-            index++;
-        }
-
-        if (numMarked > 0) {
-            synchronized (db) {
-                db.spectrumMeasurementDAO().markSynced(idArray);
-            }
+    public void markSpectrumMeasurements(List<SpectrumMeasurement> spectrumMeasurements) {
+        for (SpectrumMeasurement spectrumMeasurement : spectrumMeasurements) {
+            db.spectrumMeasurementDAO().markSynced(spectrumMeasurement.id);
         }
     }
 
-    public void markLocationMeasurements(int[] ids){
-        int index = 0;
-        int numMarked = 0;
-        ArrayList<Integer> idArray = new ArrayList<Integer>();
-
-        while (index < ids.length){
-            idArray.add(ids[index]);
-            numMarked++;
-
-            if (numMarked >= MARK_LIMIT){
-                synchronized (db){
-                    db.locationMeasurementDAO().markSynced(idArray);
-                }
-                idArray = new ArrayList<Integer>();
-                numMarked = 0;
-            }
-            index++;
-        }
-
-        if (numMarked > 0) {
-            synchronized (db) {
-                db.locationMeasurementDAO().markSynced(idArray);
-            }
+    public void markLocationMeasurements(List<LocationMeasurement> locationMeasurements) {
+        for (LocationMeasurement locationMeasurement : locationMeasurements) {
+            db.locationMeasurementDAO().markSynced(locationMeasurement.id);
         }
     }
 }
