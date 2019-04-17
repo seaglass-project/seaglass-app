@@ -16,15 +16,21 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import java.util.List;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 @Dao
 public interface SpectrumMeasurementDAO {
     @Insert
     void insert(SpectrumMeasurement measurement);
 
-    @Query("SELECT COUNT(*) FROM SpectrumMeasurement")
-    int getNumberOfRows();
+    @Query("SELECT * FROM SpectrumMeasurement WHERE synced IS 0 LIMIT :limit")
+    List<SpectrumMeasurement> getUnsynced(int limit);
+
+    @Query("UPDATE SpectrumMeasurement SET synced = 1 WHERE id IN (:ids)")
+    void markSynced(List<Integer> ids);
 }

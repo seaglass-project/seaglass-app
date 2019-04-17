@@ -16,6 +16,11 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -24,8 +29,16 @@ import androidx.room.PrimaryKey;
 public class SpectrumMeasurement {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public boolean synced;
+    public boolean synced = false;
 
     @Embedded
     public MeasurementHeader measurementHeader;
+
+    public static JSONObject getJson(SpectrumMeasurement sm) throws JSONException {
+        Gson gson = new Gson();
+
+        JSONObject smJson = new JSONObject(gson.toJson(sm));
+        smJson.remove("synced");
+        return smJson;
+    }
 }

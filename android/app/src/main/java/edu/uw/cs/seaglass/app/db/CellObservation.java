@@ -16,17 +16,25 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import edu.uw.cs.seaglass.app.Utils;
 
 @Entity
 public class CellObservation {
     public static final byte NO_TA = (byte) 0xFF;
+    private static final String TAG = Utils.TAG_PREFIX + "CellObservation";
 
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public boolean synced;
 
     @Embedded
     public MeasurementHeader measurementHeader;
@@ -39,4 +47,14 @@ public class CellObservation {
     public byte[] si3;
     public byte[] si4;
     public byte[] si13;
+
+    public boolean synced = false;
+
+    public static JSONObject getJson(CellObservation co) throws JSONException{
+        Gson gson = new Gson();
+
+        JSONObject cellObsJson = new JSONObject(gson.toJson(co));
+        cellObsJson.remove("synced");
+        return cellObsJson;
+    }
 }

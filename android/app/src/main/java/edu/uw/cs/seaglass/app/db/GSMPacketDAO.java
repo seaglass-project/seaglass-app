@@ -16,15 +16,21 @@
 
 package edu.uw.cs.seaglass.app.db;
 
+import java.util.List;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 @Dao
 public interface GSMPacketDAO {
     @Insert
     void insert(GSMPacket pkt);
 
-    @Query("SELECT COUNT(*) FROM GSMPacket")
-    int getNumberOfRows();
+    @Query("SELECT * FROM GSMPacket WHERE synced IS 0 LIMIT :limit")
+    List<GSMPacket> getUnsynced(int limit);
+
+    @Query("UPDATE GSMPacket SET synced = 1 WHERE id IN (:ids)")
+    void markSynced(List<Integer> ids);
 }

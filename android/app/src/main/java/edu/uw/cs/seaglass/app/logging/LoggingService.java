@@ -31,6 +31,12 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Binder;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.WorkManager;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.Constraints;
+
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,10 +49,12 @@ import com.google.android.gms.location.LocationServices;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import edu.uw.cs.seaglass.app.Options;
 import edu.uw.cs.seaglass.app.Utils;
 import edu.uw.cs.seaglass.app.db.DatabaseService;
+import edu.uw.cs.seaglass.app.db.SyncUploadWorker;
 import edu.uw.cs.seaglass.app.osmocom.OsmocomBinaries;
 import edu.uw.cs.seaglass.app.osmocom.OsmoconService;
 import edu.uw.cs.seaglass.app.db.CellObservation;
@@ -66,6 +74,8 @@ public class LoggingService extends Service implements
     public static final String CELL_LOG_TIMESTAMP = "edu.uw.cs.seaglass.app.logging.TIMESTAMP";
     public static final String CELL_LOG_CELL_INFO = "edu.uw.cs.seaglass.app.logging.CELL_INFO";
 
+    public static final String SYNC_PERIODIC_NAME = "unique-periodic-sync";
+
     private FusedLocationProviderClient mFusedLocationClient;
     private Notification mLoggingServiceActiveNotification;
     private LocalBroadcastManager localBroadcastManager;
@@ -83,6 +93,7 @@ public class LoggingService extends Service implements
 
     private static final int ONGOING_NOTIFICATION_ID = 1;
     private static final String TAG = Utils.TAG_PREFIX + "LoggingService";
+    private static final int SYNC_REPEAT_INTERVAL = 15;     //in minutes
 
     public LoggingService() {
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -233,6 +244,31 @@ public class LoggingService extends Service implements
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(ONGOING_NOTIFICATION_ID, mLoggingServiceActiveNotification);
+
+        NetworkType networkType;
+        if (options.getMeteredSyncAllowed()){
+            networkType = NetworkType.CONNECTED;
+        }
+        else{
+            networkType = NetworkType.UNMETERED;
+        }
+
+        Log.d(TAG, "Logging Service About to Start Periodic Workers");
+
+        if (options.getSyncEnabled()) {
+            Constraints constraints = new Constraints.Builder()
+                    .setRequiredNetworkType(networkType)
+                    .build();
+
+            PeriodicWorkRequest syncRequest =
+                    new PeriodicWorkRequest.Builder(SyncUploadWorker.class, SYNC_REPEAT_INTERVAL, TimeUnit.MINUTES)
+                            .setConstraints(constraints)
+                            .build();
+
+            WorkManager.getInstance()
+                    .enqueueUniquePeriodicWork(SYNC_PERIODIC_NAME,
+                            ExistingPeriodicWorkPolicy.REPLACE, syncRequest);
+        }
 
         return START_NOT_STICKY;
     }

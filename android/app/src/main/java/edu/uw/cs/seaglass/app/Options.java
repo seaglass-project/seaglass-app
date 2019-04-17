@@ -21,12 +21,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import edu.uw.cs.seaglass.app.db.Band;
 import edu.uw.cs.seaglass.app.driver.USBSerialPort;
 import edu.uw.cs.seaglass.app.driver.USBSerialPortManager;
 import edu.uw.cs.seaglass.app.osmocom.PhoneType;
+import edu.uw.cs.seaglass.app.ui.R;
 
 public class Options {
     public static final String CELL_LOG_RESTART = "CELL_LOG_RESTART";
@@ -39,9 +41,13 @@ public class Options {
     private static final String TRANSMIT_ENABLED = "TRANSMIT_ENABLED";
     private static final String PHONE_TYPE = "PHONE_TYPE";
     private static final String USB_PORT = "USB_PORT";
-    private static final String UUID = "UUID";
+    private static final String APP_UUID = "UUID";
+    private static final String APP_UPLOAD_KEY = "UPLOAD_KEY";
+
     private static final String SYNC_ENABLED = "SYNC_ENABLED";
+    private static final String METERED_SYNC_ALLOWED = "METERED_SYNC_ALLOWED";
     private static final String SERVER_HOSTNAME = "SERVER_HOSTNAME";
+
     private static final String OSMOCOM_VERSION = "OSMOCOM_VERSION";
     private static final String SEEN_ONBOARDING = "SEEN_ONBOARDING";
     private static final String[] BAND_ENABLED_NAMES = {
@@ -51,7 +57,6 @@ public class Options {
             "BAND_PCS1900_ENABLED"
     };
 
-    private static final String DEFAULT_SERVER_HOSTNAME = "seaglass.cs.washington.edu";
     private static final String PREFS_NAME = "SeaglassOptions";
 
     private static Options singleton = null;
@@ -59,19 +64,17 @@ public class Options {
     private LocalBroadcastManager localBroadcastManager = null;
     private USBSerialPortManager usbSerialPortManager;
     private USBSerialPort usbSerialPort;
+    private String defaultHostname;
 
     public Options(Context context) {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         usbSerialPortManager = new USBSerialPortManager(context);
+        defaultHostname = context.getResources().getString(R.string.default_server_hostname);
     }
 
     public PhoneType getPhoneType() {
         return PhoneType.valueOf(sharedPreferences.getInt(PHONE_TYPE, PhoneType.C140xor.getValue()));
-    }
-
-    public String getSyncServer() {
-        return sharedPreferences.getString(SERVER_HOSTNAME, DEFAULT_SERVER_HOSTNAME);
     }
 
     public boolean getScanEnabled() {
@@ -84,10 +87,6 @@ public class Options {
 
     public boolean getTransmitEnabled() {
         return sharedPreferences.getBoolean(TRANSMIT_ENABLED, false);
-    }
-
-    public boolean getSyncEnabled() {
-        return sharedPreferences.getBoolean(SYNC_ENABLED, false);
     }
 
     public boolean getBandEnabled(Band band) {
@@ -188,5 +187,67 @@ public class Options {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(OSMOCOM_VERSION, version);
         editor.apply();
+    }
+
+    public void setSyncEnabled(boolean syncEnabled){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SYNC_ENABLED, syncEnabled);
+        editor.apply();
+    }
+
+    public boolean getSyncEnabled() {
+        return sharedPreferences.getBoolean(SYNC_ENABLED, false);
+    }
+
+    public void setMeteredSyncAllowed(boolean meteredSyncAllowed){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(METERED_SYNC_ALLOWED, meteredSyncAllowed);
+        editor.apply();
+    }
+
+    public boolean getMeteredSyncAllowed(){
+        return sharedPreferences.getBoolean(METERED_SYNC_ALLOWED, false);
+    }
+
+    public String getSyncServer() {
+        return sharedPreferences.getString(SERVER_HOSTNAME, defaultHostname);
+    }
+
+    public void setSyncServer(String hostname) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SERVER_HOSTNAME, hostname);
+        editor.apply();
+    }
+
+    public void initializeUUID(){
+        String uuid = sharedPreferences.getString(APP_UUID, "");
+
+        if (uuid == ""){
+            uuid = UUID.randomUUID().toString();
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(APP_UUID, uuid);
+            editor.apply();
+        }
+    }
+
+    public void initializeUploadKey(){
+        String uploadKey = sharedPreferences.getString(APP_UPLOAD_KEY, "");
+
+        if (uploadKey == ""){
+            uploadKey = UUID.randomUUID().toString();
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(APP_UPLOAD_KEY, uploadKey);
+            editor.apply();
+        }
+    }
+
+    public String getUUID(){
+        return sharedPreferences.getString(APP_UUID, "");
+    }
+
+    public String getUploadKey(){
+        return sharedPreferences.getString(APP_UPLOAD_KEY, "");
     }
 }

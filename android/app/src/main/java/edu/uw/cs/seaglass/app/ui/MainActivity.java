@@ -158,6 +158,10 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
         options = new Options(this);
 
+        // Set the UUID and upload key if one has not already been set
+        options.initializeUUID();
+        options.initializeUploadKey();
+
         configFragment = ConfigFragment.newInstance();
         statusFragment = StatusFragment.newInstance();
         cellInfoFragment = CellInfoFragment.newInstance();
