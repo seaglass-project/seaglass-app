@@ -53,10 +53,18 @@ public class ClearSyncWorker extends Worker {
         int[] smids = getInputData().getIntArray(SPECTRUM_MEAS_IDS);
         int[] lmids = getInputData().getIntArray(LOCATION_MEAS_IDS);
 
-        mDatabaseService.markCellObservations(coids);
-        mDatabaseService.markGSMPackets(gmids);
-        mDatabaseService.markSpectrumMeasurements(smids);
-        mDatabaseService.markLocationMeasurements(lmids);
+        if (coids != null) {
+            mDatabaseService.markCellObservations(coids);
+        }
+        if (gmids != null) {
+            mDatabaseService.markGSMPackets(gmids);
+        }
+        if (smids != null) {
+            mDatabaseService.markSpectrumMeasurements(smids);
+        }
+        if (lmids != null) {
+            mDatabaseService.markLocationMeasurements(lmids);
+        }
 
         Log.d(TAG, "Finish Marking Records");
 

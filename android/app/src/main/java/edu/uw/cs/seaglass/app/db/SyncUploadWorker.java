@@ -26,6 +26,7 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Arrays;
 
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.StringRequest;
@@ -40,6 +41,7 @@ public class SyncUploadWorker extends Worker {
     private DatabaseService mDatabaseService;
     private static final String TAG = Utils.TAG_PREFIX + "SyncUploadWorker";
     private static final int DB_QUERY_LIMIT = 10000;
+    private static final int MAX_NUM_MARK = 1000;
     private static final String HTTPS_HEADER = "https://";
 
     List<CellObservation> cellObsToSync;
@@ -172,19 +174,10 @@ public class SyncUploadWorker extends Worker {
                     lmids[i] = locationMeasToSync.get(i).id;
                 }
 
-                Data dbIds = new Data.Builder()
-                        .putIntArray(ClearSyncWorker.CELL_OBSERVATION_IDS, coids)
-                        .putIntArray(ClearSyncWorker.GSM_PACKET_IDS, gpids)
-                        .putIntArray(ClearSyncWorker.SPECTRUM_MEAS_IDS, smids)
-                        .putIntArray(ClearSyncWorker.LOCATION_MEAS_IDS, lmids)
-                        .build();
-
-                OneTimeWorkRequest clearSyncRequest =
-                        new OneTimeWorkRequest.Builder(ClearSyncWorker.class)
-                                .setInputData(dbIds)
-                                .build();
-
-                WorkManager.getInstance().enqueue(clearSyncRequest);
+                batchWorkRequests(ClearSyncWorker.CELL_OBSERVATION_IDS, coids);
+                batchWorkRequests(ClearSyncWorker.GSM_PACKET_IDS, gpids);
+                batchWorkRequests(ClearSyncWorker.SPECTRUM_MEAS_IDS, smids);
+                batchWorkRequests(ClearSyncWorker.LOCATION_MEAS_IDS, lmids);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -210,5 +203,50 @@ public class SyncUploadWorker extends Worker {
         };
 
         requestQueue.add(request);
+    }
+
+    private void batchWorkRequests(String key, int[] ids){
+        int[] idBatch = new int[MAX_NUM_MARK];
+        int index = 0;
+        int curBatchNum = 0;
+
+        while (index < ids.length) {
+            idBatch[curBatchNum] = ids[index];
+            curBatchNum++;
+
+            if (curBatchNum >= MAX_NUM_MARK) {
+                executeMarkWorker(key, idBatch);
+
+                curBatchNum = 0;
+                idBatch = new int[MAX_NUM_MARK];
+            }
+            index++;
+        }
+
+        if (curBatchNum > 0) {
+            int[] modifiedIdBatch = new int[curBatchNum];
+            for (int k = 0; k < modifiedIdBatch.length; k++){
+                modifiedIdBatch[k] = idBatch[k];
+            }
+            executeMarkWorker(key, modifiedIdBatch);
+        }
+    }
+
+    private void executeMarkWorker(String dataKey, int[] ids) {
+        try {
+            Data dbIds = new Data.Builder()
+                    .putIntArray(dataKey, ids)
+                    .build();
+
+            OneTimeWorkRequest clearSyncRequest =
+                    new OneTimeWorkRequest.Builder(ClearSyncWorker.class)
+                            .setInputData(dbIds)
+                            .build();
+
+            WorkManager.getInstance().enqueue(clearSyncRequest);
+        } catch(IllegalStateException e){
+            Log.e(TAG, "Trying to serialize too much. Records not being marked");
+        }
+
     }
 }
