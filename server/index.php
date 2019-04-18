@@ -80,7 +80,7 @@ foreach ($data['gsmPackets'] as $gsmPacket) {
     $subtype = $gsmPacket['subtype'];
     $timeslot = $gsmPacket['timeslot'];
     $frameNumber = $gsmPacket['frameNumber'];
-    $payload = $gsmPacket['payload'];
+    $payload = base64_decode($gsmPacket['payload']);
     $timestamp = $gsmPacket['measurementHeader']['timestamp'];
     $band = $gsmPacket['measurementHeader']['band'];
     $arfcn = $gsmPacket['measurementHeader']['arfcn'];
