@@ -131,25 +131,25 @@ public class SyncUploadWorker extends Worker {
         for (CellObservation co : cos) {
             jsonArray.put(CellObservation.getJson(co));
         }
-        postData.put("CellObservations", jsonArray);
+        postData.put("cellObservations", jsonArray);
 
         jsonArray = new JSONArray();
         for (GSMPacket gp : gsmpkts) {
             jsonArray.put(GSMPacket.getJson(gp));
         }
-        postData.put("GSMPackets", jsonArray);
+        postData.put("gsmPackets", jsonArray);
 
         jsonArray = new JSONArray();
         for (SpectrumMeasurement sm : sms) {
             jsonArray.put(SpectrumMeasurement.getJson(sm));
         }
-        postData.put("SpectrumMeasurements", jsonArray);
+        postData.put("spectrumMeasurements", jsonArray);
 
         jsonArray = new JSONArray();
         for (LocationMeasurement lm : lms) {
             jsonArray.put(LocationMeasurement.getJson(lm));
         }
-        postData.put("LocationMeasurements", jsonArray);
+        postData.put("locationMeasurements", jsonArray);
         //Log.d(TAG, postData.toString());
 
         return postData.toString();
