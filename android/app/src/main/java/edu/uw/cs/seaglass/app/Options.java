@@ -220,26 +220,14 @@ public class Options {
     }
 
     public void initializeUUID(){
-        String uuid = sharedPreferences.getString(APP_UUID, "");
-
-        if (uuid == ""){
-            uuid = UUID.randomUUID().toString();
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(APP_UUID, uuid);
-            editor.apply();
+        if (sharedPreferences.getString(APP_UUID, null) == null) {
+            resetUUID();
         }
     }
 
     public void initializeUploadKey(){
-        String uploadKey = sharedPreferences.getString(APP_UPLOAD_KEY, "");
-
-        if (uploadKey == ""){
-            uploadKey = UUID.randomUUID().toString();
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(APP_UPLOAD_KEY, uploadKey);
-            editor.apply();
+        if (sharedPreferences.getString(APP_UPLOAD_KEY, null) == null) {
+            resetUploadKey();
         }
     }
 
@@ -249,5 +237,21 @@ public class Options {
 
     public String getUploadKey(){
         return sharedPreferences.getString(APP_UPLOAD_KEY, "");
+    }
+
+    public void resetUUID() {
+        String uuid = UUID.randomUUID().toString();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(APP_UUID, uuid);
+        editor.apply();
+    }
+
+    public void resetUploadKey() {
+        String uploadKey = UUID.randomUUID().toString();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(APP_UPLOAD_KEY, uploadKey);
+        editor.apply();
     }
 }
