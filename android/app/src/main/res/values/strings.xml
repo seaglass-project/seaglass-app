@@ -12,7 +12,6 @@
     <string name="console_start_text">Osmocom Phone Console Not Started</string>
     <string name="cell_info_start_text">Looking for Cells...</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enable_scanning_and_logging">Enable Scanning and Logging</string>
     <string name="enable_location">Enable Location</string>
@@ -29,6 +28,10 @@
     <string name="default_server_hostname">seaglass-ep.cs.washington.edu</string>
     <string name="hostname">Hostname</string>
     <string name="metered_sync_allowed">Sync on Metered Connections</string>
+    <string name="uuid">UUID: </string>
+    <string name="reset_uuid">Reset UUID?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="band_type">Spectrogram Band</string>
 

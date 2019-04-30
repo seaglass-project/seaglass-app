@@ -18,9 +18,11 @@ package edu.uw.cs.seaglass.app.ui;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -73,6 +75,7 @@ public class ConfigFragment extends Fragment {
     private Switch syncEnabledSwitch;
     private EditText hostnameField;
     private Switch meteredSyncAllowed;
+    private TextView uuid;
 
     private Options options;
     private HashMap<String, USBSerialPort> availablePorts;
@@ -112,6 +115,7 @@ public class ConfigFragment extends Fragment {
         this.syncEnabledSwitch = (Switch)view.findViewById(R.id.enable_sync);
         this.hostnameField = (EditText)view.findViewById(R.id.server_hostname);
         this.meteredSyncAllowed = (Switch)view.findViewById(R.id.metered_upload_allowed);
+        this.uuid = (TextView)view.findViewById(R.id.uuid);
 
         updateAvailableUSBPorts();
 
@@ -124,6 +128,7 @@ public class ConfigFragment extends Fragment {
         this.scan1900Switch.setOnCheckedChangeListener(onScan1900Changed);
         this.syncEnabledSwitch.setOnCheckedChangeListener(onSyncEnabledChanged);
         this.meteredSyncAllowed.setOnCheckedChangeListener(onMeteredSyncAllowedChanged);
+        this.uuid.setOnClickListener(onUuidClicked);
 
         return view;
     }
@@ -243,6 +248,30 @@ public class ConfigFragment extends Fragment {
         }
     };
 
+    private TextView.OnClickListener onUuidClicked = new TextView.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+            alertBuilder.setMessage(getString(R.string.reset_uuid))
+                    .setPositiveButton(getString(R.string.yes), onUuidDialogClick)
+                    .setNegativeButton(getString(R.string.no), onUuidDialogClick)
+                    .show();
+        }
+    };
+
+    private DialogInterface.OnClickListener onUuidDialogClick = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (i == DialogInterface.BUTTON_POSITIVE) {
+                // In case there's a race condition, we want to reset the upload key before
+                // changing the UUID.
+                options.resetUploadKey();
+                options.resetUUID();
+                uuid.setText(options.getUUID());
+            }
+        }
+    };
+
     BroadcastReceiver usbPermissionResultIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -305,5 +334,6 @@ public class ConfigFragment extends Fragment {
         syncEnabledSwitch.setChecked(options.getSyncEnabled());
         meteredSyncAllowed.setChecked(options.getMeteredSyncAllowed());
         hostnameField.setText(options.getSyncServer());
+        uuid.setText(options.getUUID());
     }
 }

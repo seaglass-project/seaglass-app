@@ -209,6 +209,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rssi_spinner" />
 
+    <Switch
+        android:id="@+id/metered_upload_allowed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/metered_sync_allowed"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enable_sync" />
+
     <TextView
         android:id="@+id/server_hostname_label"
         android:layout_width="wrap_content"
@@ -219,7 +232,7 @@
         android:text="@string/server_hostname"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enable_sync" />
+        app:layout_constraintTop_toBottomOf="@+id/metered_upload_allowed" />
 
     <EditText
         android:id="@+id/server_hostname"
@@ -237,20 +250,31 @@
         android:text="@string/hostname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/server_hostname_label"
-        app:layout_constraintTop_toBottomOf="@+id/enable_sync" />
+        app:layout_constraintTop_toBottomOf="@+id/metered_upload_allowed" />
 
-    <Switch
-        android:id="@+id/metered_upload_allowed"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/uuid_label"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/metered_sync_allowed"
+        android:text="@string/uuid"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/server_hostname_label" />
+
+    <TextView
+        android:id="@+id/uuid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="{00000000-0000-0000-0000-000000000000}"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/uuid_label"
         app:layout_constraintTop_toBottomOf="@+id/server_hostname_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
