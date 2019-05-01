@@ -148,7 +148,6 @@ public class CellLogProvider extends Thread {
         }
 
         close();
-        return;
     }
 
     private void close(){
