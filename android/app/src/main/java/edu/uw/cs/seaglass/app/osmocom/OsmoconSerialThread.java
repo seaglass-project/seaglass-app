@@ -298,7 +298,11 @@ class OsmoconSerialThread extends Thread {
                             if (phoneState != PhoneState.APP_RUNNING) {
                                 phoneState = PhoneState.APP_RUNNING;
                             }
-                            osmoconService.recvFromPhone(getPacket());
+                            try {
+                                osmoconService.recvFromPhone(getPacket());
+                            } catch (IOException ioex) {
+                                Log.d(TAG, ioex.toString());
+                            }
                             serialState = SerialState.NONE;
                         }
                     } else if (serialState == SerialState.ROMLOADER_PKT) {
@@ -308,7 +312,7 @@ class OsmoconSerialThread extends Thread {
                             serialState = SerialState.NONE;
                         }
                     } else {
-                        Log.d(TAG,String.format(
+                        Log.d(TAG, String.format(
                                 "Received unexpected byte from serial: %02x", buf[i]));
                     }
                 }
