@@ -246,7 +246,7 @@ public class LoggingService extends Service implements
         mLoggingServiceActiveNotification = new Notification.Builder(this)
                 .setContentTitle(getText(R.string.logging_notification_title))
                 .setContentText(getText(R.string.logging_notification_text))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.mipmap.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(ONGOING_NOTIFICATION_ID, mLoggingServiceActiveNotification);
