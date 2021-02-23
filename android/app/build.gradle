@@ -16,8 +16,8 @@ android {
         applicationId "edu.uw.cs.seaglass.app"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 6
-        versionName "0.8.1"
+        versionCode 7
+        versionName "0.8.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters 'armeabi-v7a'
