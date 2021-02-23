@@ -1,7 +1,19 @@
 [submodule "libosmocore"]
-	path = libosmocore
+	path = thirdparty/libosmocore
 	url = https://github.com/seaglass-project/libosmocore.git
 [submodule "osmocom-bb"]
 	path = osmocom-bb
 	url = https://github.com/seaglass-project/osmocom-bb.git
 	branch = seaglass
+[submodule "thirdparty/gmp"]
+	path = thirdparty/gmp
+	url = https://github.com/ryepdx/gmp.git
+[submodule "thirdparty/nettle"]
+	path = thirdparty/nettle
+	url = https://git.lysator.liu.se/nettle/nettle.git
+[submodule "thirdparty/gnutls"]
+	path = thirdparty/gnutls
+	url = https://gitlab.com/gnutls/gnutls.git
+[submodule "thirdparty/talloc"]
+	path = thirdparty/talloc
+	url = git@github.com:supersat/talloc.git
