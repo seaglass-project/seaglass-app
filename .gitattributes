@@ -1,0 +1,5 @@
+# Keep LF on Windows for Android Studio
+* text eol=lf
+
+*.so binary
+*.a binary
