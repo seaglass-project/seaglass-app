@@ -5,7 +5,7 @@ def getOsmocomVersion = { ->
     exec {
         commandLine 'git', 'rev-parse', '--short', 'HEAD'
         standardOutput = stdout
-        workingDir = file('../../osmocom-bb')
+        workingDir = file('../../thirdparty/osmocom-bb')
     }
     return stdout.toString().trim()
 }
