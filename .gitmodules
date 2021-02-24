@@ -16,4 +16,4 @@
 	url = https://gitlab.com/gnutls/gnutls.git
 [submodule "thirdparty/talloc"]
 	path = thirdparty/talloc
-	url = git@github.com:supersat/talloc.git
+	url = https://github.com/supersat/talloc.git
