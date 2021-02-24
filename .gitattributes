@@ -4,3 +4,4 @@
 *.so binary
 *.a binary
 *.png binary
+*.jar binary
